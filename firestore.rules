@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: leads
+    // Document ID: auto-generated
+    // Fields:
+    //   - fullName: string (required)
+    //   - email: string (required, email format)
+    //   - phone: string (required)
+    //   - creditScore: string (required)
+    //   - monthlyIncome: string (required)
+    //   - fundingGoal: string (required)
+    //   - hasLLC: bool (required)
+    //   - status: string (required, enum: new, contacted, qualified, disqualified)
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == "team@pytchmarketing.com");
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['fullName', 'email', 'phone', 'creditScore', 'monthlyIncome', 'fundingGoal', 'hasLLC', 'status', 'createdAt']) &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() < 100 &&
+             isValidEmail(data.email) &&
+             data.phone is string && data.phone.size() > 5 &&
+             data.creditScore is string &&
+             data.monthlyIncome is string &&
+             data.fundingGoal is string &&
+             data.hasLLC is bool &&
+             data.status in ['new', 'contacted', 'qualified', 'disqualified'] &&
+             data.createdAt is timestamp;
+    }
+
+    match /leads/{leadId} {
+      // Anyone can create a lead (public funnel)
+      allow create: if isValidLead(request.resource.data);
+      
+      // Only admins can read or update leads
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow write: if isAdmin();
+    }
+  }
+}

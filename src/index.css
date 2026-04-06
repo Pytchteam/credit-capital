@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
+
+  --color-brand-50: #fdfbf0;
+  --color-brand-100: #f9f3d1;
+  --color-brand-200: #f2e4a3;
+  --color-brand-300: #e8ce6b;
+  --color-brand-400: #dbb13d;
+  --color-brand-500: #c5a028;
+  --color-brand-600: #a67c1e;
+  --color-brand-700: #855e1b;
+  --color-brand-800: #6f4d1c;
+  --color-brand-900: #5f411c;
+  --color-brand-950: #37220c;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#050505] text-white/90 antialiased overflow-x-hidden selection:bg-brand-500 selection:text-black;
+  }
+
+  /* Reduced motion fallback */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+  
+  .glass-gold {
+    @apply bg-brand-500/5 backdrop-blur-xl border border-brand-500/20 shadow-[0_8px_32px_0_rgba(197,160,40,0.1)];
+  }
+
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-brand-200 via-brand-400 to-brand-600;
+  }
+  
+  .btn-primary {
+    @apply px-10 py-5 bg-gradient-to-br from-brand-300 via-brand-500 to-brand-600 text-black font-bold rounded-full hover:shadow-[0_0_40px_rgba(197,160,40,0.5)] transition-all duration-500 active:scale-95 hover:scale-[1.02] cursor-pointer;
+  }
+  
+  .btn-secondary {
+    @apply px-10 py-5 bg-white/5 text-white border border-white/10 font-semibold rounded-full hover:bg-white/10 transition-all duration-500 active:scale-95 hover:scale-[1.02] cursor-pointer;
+  }
+
+  .section-padding {
+    @apply py-24 md:py-40;
+  }
+
+  .luxe-card {
+    @apply bg-[#0A0A0A] border border-white/5 hover:border-brand-500/30 transition-all duration-700 rounded-[40px] shadow-2xl;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.markdown-body {
+  @apply text-white/70 leading-relaxed;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply text-white font-display font-bold mt-8 mb-4;
+}
+
+.markdown-body strong {
+  @apply text-brand-400 font-bold;
+}

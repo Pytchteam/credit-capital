@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Lead": {
+      "title": "Lead",
+      "description": "A lead from the qualification funnel.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "creditScore": { "type": "string" },
+        "monthlyIncome": { "type": "string" },
+        "fundingGoal": { "type": "string" },
+        "hasLLC": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["new", "contacted", "qualified", "disqualified"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fullName", "email", "phone", "creditScore", "monthlyIncome", "fundingGoal", "hasLLC", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Collection of leads from the qualification funnel."
+    }
+  }
+}
